@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * This file contains the version information for the onlinetext submission plugin
+ * This file contains the version information for the assignsubmission_urlsub plugin
  *
  * @package    assignsubmission_urlsub
  * @author     Paul Vincent
@@ -26,5 +26,3 @@
 $settings->add(new admin_setting_configcheckbox('assignsubmission_urlsub/default',
                    new lang_string('default', 'assignsubmission_urlsub'),
                    new lang_string('default_help', 'assignsubmission_urlsub'), 1));
-
-// TODO: Check for global config to require and lock URL Submission.

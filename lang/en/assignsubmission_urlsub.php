@@ -31,5 +31,7 @@ $string['nosubmission'] = 'No blog has been submitted for this assignment';
 $string['urlsub'] = 'URL Submission';
 $string['urlsubtitle'] = 'URL Title';
 $string['urlsubforlog'] = 'Blog URL: {$a}';
+$string['urlsubheading'] = '<b>Student\'s Blog:</b>';
+$string['urlbodytext'] = '<b><a href="{$a->link}" target="_blank">{$a->name}</a></b> ({$a->link})';
 $string['urlsub_help'] = 'Enter your blog address (beginning with https://) if submitting your blog for this Assignment.';
 $string['pluginname'] = 'URL Submission';

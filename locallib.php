@@ -131,7 +131,9 @@ class assign_submission_urlsub extends assign_submission_plugin {
                 $subtitle = $sub;
             }
             if (!empty($sub)){
-                $urlsub = '<b>Student\'s Blog:</b><br><b><a href="' . $sub . '" target="_blank">'. $subtitle .'</a></b> ('. $urlsubsubmission->urlsub .')';
+                $urlsub = get_string('urlsubheading', 'assignsubmission_urlsub') . '<br>' .
+                get_string('urlbodytext', 'assignsubmission_urlsub',['link' => $sub, 'name' => $subtitle]);
+                
                 return $urlsub;
             }
         }
