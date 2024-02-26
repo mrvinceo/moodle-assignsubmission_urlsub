@@ -1,9 +1,16 @@
 define(['jquery'], function($) {
     return {
         init: function() {
+            console.log("URL submission script loaded.");
+
             $(document).ready(function() {
-                var container = $('#urlsub_container');
-                var addButton = $('#add_url_button');
+                // var container = $('#urlsub_container');
+                // var addButton = $('#add_url_button');
+                // Target the add button by its ID
+                $('#add_url_button').on('click', function(e) {
+                    e.preventDefault();
+                    addUrlTitlePair();
+                });
 
                 // Function to add a new URL-title pair
                 function addUrlTitlePair() {
@@ -42,11 +49,11 @@ define(['jquery'], function($) {
                 // Initial pair
                 addUrlTitlePair();
 
-                // Event listener for the add button
+                /* // Event listener for the add button 
                 addButton.on('click', function(e) {
                     e.preventDefault();
                     addUrlTitlePair();
-                });
+                }); */
             });
         }
     };
