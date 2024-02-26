@@ -4,8 +4,8 @@ define(['jquery'], function($) {
             console.log("URL submission script loaded.");
 
             $(document).ready(function() {
-                // var container = $('#urlsub_container');
-                // var addButton = $('#add_url_button');
+                var container = $('#urlsub_container'); // Define container here
+
                 // Target the add button by its ID
                 $('#add_url_button').on('click', function(e) {
                     e.preventDefault();
@@ -16,7 +16,7 @@ define(['jquery'], function($) {
                 function addUrlTitlePair() {
                     var index = $('.url-title-pair').length;
 
-                    // Create the URL input
+                    // Create the URL and title inputs, and removal button
                     var urlInput = $('<input>').attr({
                         type: 'text',
                         name: 'urls[' + index + '][url]',
@@ -24,7 +24,6 @@ define(['jquery'], function($) {
                         class: 'url-input'
                     });
 
-                    // Create the title input
                     var titleInput = $('<input>').attr({
                         type: 'text',
                         name: 'urls[' + index + '][title]',
@@ -32,7 +31,6 @@ define(['jquery'], function($) {
                         class: 'title-input'
                     });
 
-                    // Create a removal button for the pair
                     var removeButton = $('<button>').attr({
                         type: 'button',
                     }).text('Remove').on('click', function() {
@@ -43,17 +41,11 @@ define(['jquery'], function($) {
                     var pairContainer = $('<div>').addClass('url-title-pair');
                     pairContainer.append(urlInput, titleInput, removeButton);
 
-                    container.append(pairContainer);
+                    container.append(pairContainer); // This now correctly refers to the defined container variable
                 }
 
                 // Initial pair
                 addUrlTitlePair();
-
-                /* // Event listener for the add button 
-                addButton.on('click', function(e) {
-                    e.preventDefault();
-                    addUrlTitlePair();
-                }); */
             });
         }
     };

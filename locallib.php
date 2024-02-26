@@ -59,7 +59,7 @@ class assign_submission_urlsub extends assign_submission_plugin {
         global $PAGE;
 
         // Enqueue JavaScript module for dynamic URL-title pairs
-        $PAGE->requires->js_call_amd('assignsubmission_urlsub/urlsub', 'init');
+        $PAGE->requires->js_call_amd('assignsubmission_urlsub/urlsubform', 'init');
 
         $mform->addElement('html', '<div id="urlsub_container"></div>');
         $mform->addElement('button', 'add_url', get_string('addurl', 'assignsubmission_urlsub'), array('id' => 'add_url_button'));
