@@ -1,47 +1,53 @@
-document.addEventListener('DOMContentLoaded', function () {
-    var container = document.getElementById('urlsub_container');
-    var addButton = document.getElementById('add_url_button');
+define(['jquery'], function($) {
+    return {
+        init: function() {
+            $(document).ready(function() {
+                var container = $('#urlsub_container');
+                var addButton = $('#add_url_button');
 
-    // Function to add a new URL-title pair
-    function addUrlTitlePair() {
-        var index = container.querySelectorAll('.url-title-pair').length;
+                // Function to add a new URL-title pair
+                function addUrlTitlePair() {
+                    var index = $('.url-title-pair').length;
 
-        // Create the URL input
-        var urlInput = document.createElement('input');
-        urlInput.type = 'text';
-        urlInput.name = 'urls[' + index + '][url]';
-        urlInput.placeholder = 'URL';
+                    // Create the URL input
+                    var urlInput = $('<input>').attr({
+                        type: 'text',
+                        name: 'urls[' + index + '][url]',
+                        placeholder: 'URL',
+                        class: 'url-input'
+                    });
 
-        // Create the title input
-        var titleInput = document.createElement('input');
-        titleInput.type = 'text';
-        titleInput.name = 'urls[' + index + '][title]';
-        titleInput.placeholder = 'Title';
+                    // Create the title input
+                    var titleInput = $('<input>').attr({
+                        type: 'text',
+                        name: 'urls[' + index + '][title]',
+                        placeholder: 'Title',
+                        class: 'title-input'
+                    });
 
-        // Create a removal button for the pair
-        var removeButton = document.createElement('button');
-        removeButton.type = 'button';
-        removeButton.textContent = 'Remove';
-        removeButton.onclick = function() {
-            this.parentNode.remove();
-        };
+                    // Create a removal button for the pair
+                    var removeButton = $('<button>').attr({
+                        type: 'button',
+                    }).text('Remove').on('click', function() {
+                        $(this).parent().remove();
+                    });
 
-        // Container for the pair
-        var pairContainer = document.createElement('div');
-        pairContainer.className = 'url-title-pair';
-        pairContainer.appendChild(urlInput);
-        pairContainer.appendChild(titleInput);
-        pairContainer.appendChild(removeButton);
+                    // Container for the pair
+                    var pairContainer = $('<div>').addClass('url-title-pair');
+                    pairContainer.append(urlInput, titleInput, removeButton);
 
-        container.appendChild(pairContainer);
-    }
+                    container.append(pairContainer);
+                }
 
-    // Initial pair
-    addUrlTitlePair();
+                // Initial pair
+                addUrlTitlePair();
 
-    // Event listener for the add button
-    addButton.addEventListener('click', function (e) {
-        e.preventDefault();
-        addUrlTitlePair();
-    });
+                // Event listener for the add button
+                addButton.on('click', function(e) {
+                    e.preventDefault();
+                    addUrlTitlePair();
+                });
+            });
+        }
+    };
 });
