@@ -25,8 +25,8 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->version   = 2021071500;
+$plugin->version   = 2023022600;
 $plugin->requires  = 2013110500;
 $plugin->component = 'assignsubmission_urlsub';
 $plugin->maturity = MATURITY_RC;
-$plugin->release = '1.1';
+$plugin->release = '1.2';

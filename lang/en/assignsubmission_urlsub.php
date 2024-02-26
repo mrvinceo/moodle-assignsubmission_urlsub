@@ -28,6 +28,7 @@ $string['default_help'] = 'If set, students will be able to add their blog URL t
 $string['enabled'] = 'Blog URL';
 $string['enabled_help'] = 'If enabled, students will be asked to enter their blog URL for this assignment.';
 $string['nosubmission'] = 'No blog has been submitted for this assignment';
+$string['addurl'] = 'Add a URL';
 $string['urlsub'] = 'URL Submission';
 $string['urlsubtitle'] = 'URL Title';
 $string['urlsubforlog'] = 'Blog URL: {$a}';

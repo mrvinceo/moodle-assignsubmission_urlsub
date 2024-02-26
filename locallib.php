@@ -56,29 +56,13 @@ class assign_submission_urlsub extends assign_submission_plugin {
      * @return true if elements were added to the form
      */
     public function get_form_elements($submission, MoodleQuickForm $mform, stdClass $data) {
-        $elements = array();
+        global $PAGE;
 
-        $submissionid = $submission ? $submission->id : 0;
+        // Enqueue JavaScript module for dynamic URL-title pairs
+        $PAGE->requires->js_call_amd('assignsubmission_urlsub/urlsub', 'init');
 
-        if (!isset($data->urlsub)) {
-            $data->urlsub = '';
-            $data->urlsubtitle = '';
-        }
-
-        if ($submission) {
-            $urlsubsubmission = $this->get_urlsub_submission($submission->id);
-            if ($urlsubsubmission) {
-                $data->urlsub = $urlsubsubmission->urlsub;
-                $data->urlsubtitle = $urlsubsubmission->urlsubtitle;
-            }
-        }
-
-        $mform->addElement('text', 'urlsubtitle', get_string('urlsubtitle', 'assignsubmission_urlsub'), null);
-        $mform->setType('urlsubtitle', PARAM_TEXT);
-
-        $mform->addElement('text', 'urlsub', $this->get_name(), null);
-        $mform->setType('urlsub', PARAM_TEXT);
-        $mform->addHelpButton('urlsub', 'urlsub', 'assignsubmission_urlsub');
+        $mform->addElement('html', '<div id="urlsub_container"></div>');
+        $mform->addElement('button', 'add_url', get_string('addurl', 'assignsubmission_urlsub'), array('id' => 'add_url_button'));
 
         return true;
     }
@@ -96,16 +80,13 @@ class assign_submission_urlsub extends assign_submission_plugin {
         $urlsubsubmission = $this->get_urlsub_submission($submission->id);
 
         if ($urlsubsubmission) {
-
-            $urlsubsubmission->urlsub = $data->urlsub;
-            $urlsubsubmission->urlsubtitle = $data->urlsubtitle;
+            // Assume $data->urls is an array of ['url' => '...', 'title' => '...']
+            $urlsubsubmission->urlsub = json_encode($data->urls);
             $updatestatus = $DB->update_record('assignsubmission_urlsub', $urlsubsubmission);
             return $updatestatus;
         } else {
-
             $urlsubsubmission = new stdClass();
-            $urlsubsubmission->urlsub = $data->urlsub;
-            $urlsubsubmission->urlsubtitle = $data->urlsubtitle;
+            $urlsubsubmission->urlsub = json_encode($data->urls);
 
             $urlsubsubmission->submission = $submission->id;
             $urlsubsubmission->assignment = $this->assignment->get_instance()->id;
@@ -113,34 +94,27 @@ class assign_submission_urlsub extends assign_submission_plugin {
             return $urlsubsubmission->id > 0;
         }
     }
-
-     /**
-      * Display URL Submission
-      *
-      * @param stdClass $submission
-      * @param bool $showviewlink - If the summary has been truncated set this to true
-      * @return string
-      */
+    
+    /**
+     * Display URL Submission
+     *
+     * @param stdClass $submission
+     * @param bool $showviewlink - If the summary has been truncated set to true
+     * @return string
+     */
     public function view_summary(stdClass $submission, &$showviewlink) {
         $urlsubsubmission = $this->get_urlsub_submission($submission->id);
 
-        if ($urlsubsubmission) {
-            $sub = $urlsubsubmission->urlsub;
-            $subtitle = $urlsubsubmission->urlsubtitle;
-            if (empty($subtitle)) {
-                $subtitle = $sub;
+        if ($urlsubsubmission && !empty($urlsubsubmission->urlsub)) {
+            $urls = json_decode($urlsubsubmission->urlsub, true);
+            $displayHtml = '';
+            foreach ($urls as $pair) {
+                $displayHtml .= html_writer::link(new moodle_url($pair['url']), $pair['title']) . '<br>';
             }
-            if (!empty($sub)){
-                $urlsub = get_string('urlsubheading', 'assignsubmission_urlsub') . '<br>' .
-                get_string('urlbodytext', 'assignsubmission_urlsub',['link' => $sub, 'name' => $subtitle]);
-                
-                return $urlsub;
-            }
+            return $displayHtml;
         }
         return '';
     }
-    //TODO: Need to check for https:// at the start of URLs and prepend that if not exists.
-
 
     /**
      * Formatting for log info
@@ -149,13 +123,15 @@ class assign_submission_urlsub extends assign_submission_plugin {
      * @return string
      */
     public function format_for_log(stdClass $submission) {
-        // Format the info for each submission plugin (will be logged).
         $urlsubsubmission = $this->get_urlsub_submission($submission->id);
-        $urlsubloginfo = get_string('urlsubforlog',
-                                         'assignsubmission_urlsub',
-                                         $urlsubsubmission->urlsub);
-
-        return $urlsubloginfo;
+        if ($urlsubsubmission && !empty($urlsubsubmission->urlsub)) {
+            $urls = json_decode($urlsubsubmission->urlsub, true);
+            $loginfo = array_map(function($pair) {
+                return "{$pair['title']}: {$pair['url']}";
+            }, $urls);
+            return implode(", ", $loginfo);
+        }
+        return '';
     }
 
     /**
@@ -165,6 +141,7 @@ class assign_submission_urlsub extends assign_submission_plugin {
      */
     public function delete_instance() {
         global $DB;
+        // No change is necessary for this method unless you have a separate table for URLs.
         $DB->delete_records('assignsubmission_urlsub',
                             array('assignment' => $this->assignment->get_instance()->id));
 
@@ -179,8 +156,7 @@ class assign_submission_urlsub extends assign_submission_plugin {
      */
     public function is_empty(stdClass $submission) {
         $urlsubsubmission = $this->get_urlsub_submission($submission->id);
-
-        return empty($urlsubsubmission->urlsub);
+        return empty($urlsubsubmission) || empty($urlsubsubmission->urlsub);
     }
 
     /**
@@ -201,5 +177,4 @@ class assign_submission_urlsub extends assign_submission_plugin {
         }
         return true;
     }
-
 }
